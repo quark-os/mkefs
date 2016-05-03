@@ -36,6 +36,12 @@ EFS::EFS()
 	
 }
 
+EFS::EFS(string bootfile)
+	: DirectoryScanner()
+{
+	this->bootfile = bootfile;
+}
+
 void EFS::scanCallback(File& file)
 {
 	if(file.getFilename() != ".." 
@@ -77,7 +83,8 @@ uint64_t EFS::generateDescriptors()
 		uint64_t parent = getIndexByPath(f.getPath());
 		uint64_t next = index + 1 < files.size() ? index + 2 : 1;
 		uint32_t frags = 1;
-		uint32_t mark = 0;
+		uint32_t mark = f.getFilename() == bootfile ? 0x544F4F42 : 0;
+		cout << f.getFilename() << " : " << bootfile << endl;
 		uint64_t location = f.getType() == REGULAR ? 1 + files.size() + filesizeSum : 0;
 		desc.push_back(Descriptor(next, parent, filesize, frags, mark, location, f.getFilename()));
 		index++;
@@ -114,7 +121,6 @@ void EFS::writeFile(ofstream& fout, File& file)
 	if(file.getType() == REGULAR)
 	{
 		size_t fsize = file.getSize() + (512 - (file.getSize() % 512));
-		cout << "fsize for " << file.getFilename() << " = " << fsize << endl;
 		char* chunkSector = new char[512];
 		char* fileData = new char[fsize];
 		memset(chunkSector, 0, 512);

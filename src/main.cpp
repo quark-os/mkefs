@@ -10,6 +10,7 @@ int main(int argc, char** args)
 {
 	int flagState = 0;
 	string outputFile = "efs.img";
+	string bootfile = "";
 	string sysroot = ".";
 	for(int i = 1; i < argc; i++)
 	{
@@ -25,6 +26,10 @@ int main(int argc, char** args)
 			{
 				flagState = 1;
 			}
+			else if(arg == "-b")
+			{
+				flagState = 2;
+			}
 			break;
 		case 1:
 			if(arg[0] != '-')
@@ -37,10 +42,23 @@ int main(int argc, char** args)
 				cout << "Invalid use of flag '-o'" << endl;
 				return -1;
 			}
+			break;
+		case 2:
+			if(arg[0] != '-')
+			{
+				bootfile = arg;
+				flagState = 0;
+			}
+			else
+			{
+				cout << "Invalid use of flag '-b'" << endl;
+				return -1;
+			}
+			break;
 		}
 	}
 	
-	EFS filesystem;
+	EFS filesystem(bootfile);
 	filesystem.scan(sysroot);
 	filesystem.compileImage(outputFile);
 	return 0;

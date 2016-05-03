@@ -36,14 +36,16 @@ public:
 
 		EFS();
 		
+		EFS(string bootfile);
+		
 		virtual void scanCallback(File& file);
 		
 		void compileImage(string output);
 			
 private:
 		
-		static const uint64_t EFS_MAGIC_1 = 0x0011223344556677;
-		static const uint64_t EFS_MAGIC_2 = 0x8899AABBCCDDEEFF;
+		static const uint64_t EFS_MAGIC_1 = 0x2053494854204948;
+		static const uint64_t EFS_MAGIC_2 = 0x21544F4F42205349;
 
 		uint64_t generateDescriptors();
 		
@@ -58,6 +60,8 @@ private:
 		list<File> files;
 		
 		list<Descriptor> desc;
+		
+		string bootfile;
 		
 };
 

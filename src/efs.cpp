@@ -81,7 +81,7 @@ uint64_t EFS::generateDescriptors()
 		
 		uint64_t filesize = f.getType() == REGULAR ? (f.getSize() + (512 - (f.getSize() % 512))) / 512 : 0;
 		uint64_t parent = getIndexByPath(f.getPath());
-		uint64_t next = index + 1 < files.size() ? index + 2 : 1;
+		uint64_t next = index + 1 < files.size() ? index + 2 : 0;
 		uint32_t frags = 1;
 		uint32_t mark = f.getFilename() == bootfile ? 0x544F4F42 : 0;
 		cout << f.getFilename() << " : " << bootfile << endl;
